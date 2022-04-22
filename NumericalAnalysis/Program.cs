@@ -22,14 +22,16 @@ namespace NumericalAnalysis
             string[] kParts;
             a = Input.Double("\nНачало отрезка: ");
             b = Input.Double("\nКонец отрезка: ");
-            h = Input.Double("\nШаг функции: ");
-            k = Input.Double("\nТочность: ");
-            kParts = k.ToString().Split(',');
-            if (kParts.Length != 1)
-                fractional = -kParts[1].Length;
+            h = Input.DoubleNotZero("\nШаг функции: ");
+            k = Input.DoubleNotZero("\nТочность: ");
+            if (k.ToString().Contains('-'))
+            {
+                kParts = k.ToString().Split('-');
+                fractional = -ToDouble(kParts[1]);
+            }
             else
-                fractional = kParts[0].Length;
-            WriteLine(fractional);
+                fractional = k.ToString().Length;
+
         }
     }
     internal class Program
@@ -49,13 +51,33 @@ namespace NumericalAnalysis
             {
                 Write(text);
                 input = ToDouble(ReadLine());
+                return input;
             }
             catch (Exception)
             {
                 WriteLine("Введенная строка имела неверный формат.");
                 return Double(text);
             }
-            return input;
+        }
+        public static double DoubleNotZero(string text)
+        {
+            double input;
+            try
+            {
+                Write(text);
+                input = ToDouble(ReadLine());
+                if (Check.IsZero(input))
+                {
+                    WriteLine("Введенная строка имела неверный формат.");
+                    return Double(text);
+                }
+                return input;
+            }
+            catch (Exception)
+            {
+                WriteLine("Введенная строка имела неверный формат.");
+                return Double(text);
+            }
         }
         public static string String(string text)
         {
@@ -63,6 +85,16 @@ namespace NumericalAnalysis
             Write(text);
             input = ReadLine();
             return input;
+        }
+    }
+    internal class Check
+    {
+        public static bool IsZero(double value)
+        {
+            if (value == 0)
+                return true;
+            else
+                return false;
         }
     }
 }
