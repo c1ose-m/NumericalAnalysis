@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -90,6 +91,39 @@ namespace NumericalAnalysis
                     $"{Round(suspicious[1], fractional + 1)}) - не является отрезком изоляции.");
         }
     }
+    internal class Interpolation
+    {
+        public static void Solution()
+        {
+            List<List<double>> mainMatrix = new List<List<double>>
+            {
+                new List<double>{1, 1, 1, 1},
+                new List<double>{3.375, 2.25, 1.5, 1},
+                new List<double>{8, 4, 2, 1},
+                new List<double>{10.648, 4.84, 2.2, 1}
+            };
+            double det = 1, r, g;
+            int n;
+            n = Input.IntNotZero("Введите размерность матрицы: ");
+            List<List<double>> aMatrix = mainMatrix;
+            for (int i = 0; i < n - 1; i++)
+            {
+                g = aMatrix[i][i];
+                for (int j = 0; j < n; j++)
+                    aMatrix[i][j] /= g;
+                det *= g;
+                for (int j = 1 + i; j < n; j++)
+                {
+                    r = -aMatrix[j][i];
+                    for (int k = 0; k < n; k++)
+                        aMatrix[j][k] += aMatrix[i][k] * r;
+                }
+            }
+            for (int i = 0; i < n; i++)
+                det *= aMatrix[i][i];
+            WriteLine(det);
+        }
+    }
     internal class SimpsonRule
     {
         static double Function(double x)
@@ -136,7 +170,7 @@ namespace NumericalAnalysis
             int n;
             a = Input.Double("\nНачало отрезка: ");
             b = Input.Double("\nКонец отрезка: ");
-            n = Input.IntNotZero("\nКолиечество шагов функции: ");
+            n = Input.IntNotZero("\nКоличество шагов функции: ");
             h = Input.Double("\nШаг функции: ");
             x0 = Input.Double("\nЗначение x0: ");
             y0 = Input.Double("\nЗначение y0: ");
@@ -149,7 +183,7 @@ namespace NumericalAnalysis
                 r3 = h * Function(i + h / 2, y0 + r2 / 2);
                 r4 = h * Function(i + h, y0 + r3);
                 WriteLine($"{r1} // {r2} // {r3} // {r4}");
-                y0 = y0 + 1 /(double) 6 * (r1 + 2 * r2 + 2 * r3 + r4);
+                y0 = y0 + 1 / (double)6 * (r1 + 2 * r2 + 2 * r3 + r4);
             }
         }
     }
@@ -159,11 +193,13 @@ namespace NumericalAnalysis
         {
             WriteLine("Привет! Тут метод хорд, интерполяция, метод парабол и Рунге-Кутты(2).\n\n");
             /*WriteLine("Метод хорд.");
-            SecantMethod.Solution();
-            WriteLine("\n\nМетод парабол.");
-            SimpsonRule.Solution();*/
+            SecantMethod.Solution();*/
+            WriteLine("\n\nИнтерполяция.");
+            Interpolation.Solution();
+            /*WriteLine("\n\nМетод парабол.");
+            SimpsonRule.Solution();
             WriteLine("\n\nМетод Рунге-Кутты.");
-            RungeKuttaMethod.Solution();
+            RungeKuttaMethod.Solution();*/
             Read();
         }
     }
